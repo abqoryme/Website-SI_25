@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Daftar Anggota Kelas — Prodi Sistem Informasi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg:#0f1724;
+            --card:#0b1220;
+            --muted:#94a3b8;
+            --accent:#6ee7b7;
+            --glass: rgba(255,255,255,0.03);
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            background:linear-gradient(180deg,#071022 0%, #071022 40%, #07102a 100%);
+            color:#e6eef6;
+            min-height:100vh;
+            padding:28px;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+        }
+        header{
+            display:flex;
+            gap:16px;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:20px;
+        }
+        .brand{
+            display:flex;gap:12px;align-items:center;
+        }
+        .logo{
+            width:56px;height:56px;border-radius:10px;
+            background:linear-gradient(135deg,#0ea5a3 0%, #06b6d4 100%);
+            display:flex;align-items:center;justify-content:center;font-weight:700;color:#04263a;
+            box-shadow: 0 6px 18px rgba(3,7,18,0.6);
+            font-size:18px;
+        }
+        h1{font-size:18px;margin:0}
+        p.lead{margin:0;color:var(--muted);font-size:13px}
+
+        .controls{
+            display:flex;gap:12px;align-items:center;
+            flex-wrap:wrap;
+        }
+        .search{
+            background:var(--glass);border:1px solid rgba(255,255,255,0.04);
+            padding:8px 12px;border-radius:10px;color:inherit;min-width:220px;
+            display:flex;align-items:center;gap:8px;
+        }
+        .search input{
+            background:transparent;border:0;outline:none;color:inherit;font-size:14px;
+        }
+        select, button{
+            background:transparent;border:1px solid rgba(255,255,255,0.06);
+            padding:8px 12px;border-radius:10px;color:inherit;font-size:14px;
+            cursor:pointer;
+        }
+        button.primary{
+            background:linear-gradient(90deg,#06b6d4,#0ea5a3);
+            border:0;color:#04263a;font-weight:700;
+            box-shadow: 0 6px 18px rgba(6,182,212,0.12);
+        }
+
+        main{
+            margin-top:16px;
+        }
+        .stats{
+            display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;
+        }
+        .stat{
+            background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            padding:12px;border-radius:10px;min-width:140px;
+            border:1px solid rgba(255,255,255,0.03);
+        }
+        .grid{
+            display:grid;
+            grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+            gap:14px;
+        }
+        .card{
+            background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.025);
+            display:flex;gap:12px;align-items:center;transition:transform .15s ease,box-shadow .15s;
+        }
+        .card:hover{transform:translateY(-6px);box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+        .avatar{
+            width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+            font-weight:700;color:#04263a;font-size:18px;
+            flex-shrink:0;
+        }
+        .meta{flex:1;min-width:0}
+        .meta h3{margin:0;font-size:15px}
+        .meta p{margin:4px 0 0 0;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .tags{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+        .chip{padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px;border:1px solid rgba(255,255,255,0.02);color:var(--muted)}
+        .actions{display:flex;gap:6px;align-items:center}
+        .icon-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:10px;color:var(--muted);cursor:pointer}
+        .icon-btn:hover{color:var(--accent);border-color:rgba(110,231,183,0.12)}
+
+        /* modal */
+        .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:18px;z-index:60}
+        .modal{background:var(--card);padding:18px;border-radius:12px;max-width:720px;width:100%;border:1px solid rgba(255,255,255,0.04)}
+        .modal .row{display:flex;gap:12px}
+        .modal .left{width:140px;text-align:center}
+        .modal .right{flex:1}
+        .close{margin-left:auto;background:transparent;border:0;color:var(--muted);cursor:pointer}
+        @media (max-width:640px){
+            header{flex-direction:column;align-items:flex-start}
+            .controls{width:100%}
+            .search{min-width:100%}
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <div class="logo">SI</div>
+            <div>
+                <h1>Anggota Kelas — Prodi Sistem Informasi</h1>
+                <p class="lead">Profil anggota, angkatan, dan kontak singkat (desain modern & responsif)</p>
+            </div>
+        </div>
+
+        <div class="controls" aria-hidden="false">
+            <div class="search" title="Cari nama atau NIM">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.7"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <input id="q" placeholder="Cari nama atau NIM..." />
+            </div>
+
+            <select id="filterAngkatan" title="Filter angkatan">
+                <option value="all">Semua Angkatan</option>
+            </select>
+
+            <select id="sortBy" title="Urutkan">
+                <option value="name">Urutkan: Nama A→Z</option>
+                <option value="nim">Urutkan: NIM</option>
+            </select>
+
+            <button id="exportBtn" title="Ekspor daftar ke CSV">Ekspor CSV</button>
+            <button id="addBtn" class="primary">+ Tambah Anggota</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="stats">
+            <div class="stat">
+                <div style="font-size:13px;color:var(--muted)">Total Anggota</div>
+                <div id="totalCount" style="font-size:20px;font-weight:700">0</div>
+            </div>
+            <div class="stat">
+                <div style="font-size:13px;color:var(--muted)">Prodi</div>
+                <div style="font-size:16px;font-weight:600">Sistem Informasi</div>
+            </div>
+        </div>
+
+        <section id="list" class="grid" aria-live="polite"></section>
+    </main>
+
+    <!-- modal detail -->
+    <div id="modal" class="modal-backdrop" role="dialog" aria-hidden="true">
+        <div class="modal" role="document">
+            <div style="display:flex;align-items:center;gap:12px">
+                <strong id="modalName">Nama</strong>
+                <button class="close" id="modalClose" title="Tutup">✕</button>
+            </div>
+            <hr style="opacity:.06;margin:12px 0 14px 0" />
+            <div class="row">
+                <div class="left">
+                    <div id="modalAvatar" style="width:120px;height:120px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#04263a;"></div>
+                </div>
+                <div class="right">
+                    <p id="modalNim" style="margin:0;color:var(--muted)"></p>
+                    <p id="modalAngkatan" style="margin:6px 0;color:var(--muted)"></p>
+                    <p id="modalEmail" style="margin:6px 0;color:var(--muted)"></p>
+                    <div style="margin-top:10px">
+                        <strong>Minat / Keahlian</strong>
+                        <div id="modalSkills" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- add member modal (simple) -->
+    <div id="addModal" class="modal-backdrop" aria-hidden="true">
+        <div class="modal">
+            <div style="display:flex;align-items:center;gap:12px">
+                <strong>Tambah Anggota Baru</strong>
+                <button class="close" id="addClose">✕</button>
+            </div>
+            <hr style="opacity:.06;margin:12px 0 14px 0" />
+            <form id="addForm">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                    <input name="name" placeholder="Nama lengkap" required style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit"/>
+                    <input name="nim" placeholder="NIM" required style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit"/>
+                    <input name="email" placeholder="email@domain" type="email" required style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit"/>
+                    <input name="angkatan" placeholder="Angkatan (contoh: 2023)" required style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit"/>
+                </div>
+                <textarea name="skills" placeholder="Minat / Skill (pisah dengan koma)" rows="3" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit"></textarea>
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+                    <button type="button" id="addCancel">Batal</button>
+                    <button type="submit" class="primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // sample data
+        const members = [
+            {name:"Aditya Pratama", nim:"SI21001", angkatan:"2021", email:"aditya.pr@univ.ac.id", skills:["Database","Analisis Sistem"]},
+            {name:"Bella Kusuma", nim:"SI22007", angkatan:"2022", email:"bella.k@univ.ac.id", skills:["UI/UX","Frontend"]},
+            {name:"Citra Wulandari", nim:"SI23003", angkatan:"2023", email:"citra.w@univ.ac.id", skills:["Data Mining","Python"]},
+            {name:"Dimas H", nim:"SI21012", angkatan:"2021", email:"dimas.h@univ.ac.id", skills:["Networking","Keamanan"]},
+            {name:"Eka Putri", nim:"SI23011", angkatan:"2023", email:"eka.p@univ.ac.id", skills:["Mobile Dev","Flutter"]},
+            {name:"Farhan Aziz", nim:"SI22005", angkatan:"2022", email:"farhan.a@univ.ac.id", skills:["Machine Learning","R"]},
+            {name:"Gina R", nim:"SI21020", angkatan:"2021", email:"gina.r@univ.ac.id", skills:["Project Management"]},
+            {name:"Hendra", nim:"SI23018", angkatan:"2023", email:"hendra@univ.ac.id", skills:["Backend","Node.js"]},
+            {name:"Intan S", nim:"SI22016", angkatan:"2022", email:"intan.s@univ.ac.id", skills:["Data Visualization"]},
+            {name:"Joko Santoso", nim:"SI21009", angkatan:"2021", email:"joko.s@univ.ac.id", skills:["Sistem Informasi Kesehatan"]}
+        ];
+
+        const state = {data:[...members], query:'', angkatan:'all', sort:'name'};
+
+        const listEl = document.getElementById('list');
+        const qEl = document.getElementById('q');
+        const filterEl = document.getElementById('filterAngkatan');
+        const sortEl = document.getElementById('sortBy');
+        const totalCount = document.getElementById('totalCount');
+
+        function colorFromString(s){
+            let h=0;
+            for(let i=0;i<s.length;i++) h = s.charCodeAt(i) + ((h<<5)-h);
+            const hue = Math.abs(h)%360;
+            return `linear-gradient(135deg,hsl(${hue} 70% 65%), hsl(${(hue+40)%360} 70% 55%))`;
+        }
+
+        function initials(name){
+            return name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+        }
+
+        function populateFilters(){
+            const angkats = Array.from(new Set(members.map(m=>m.angkatan))).sort();
+            for(const a of angkats){
+                const opt = document.createElement('option');
+                opt.value = a; opt.textContent = `Angkatan ${a}`;
+                filterEl.appendChild(opt);
+            }
+        }
+
+        function render(){
+            // apply filters
+            let data = members.filter(m=>{
+                const q = state.query.toLowerCase();
+                if(state.angkatan !== 'all' && m.angkatan !== state.angkatan) return false;
+                if(!q) return true;
+                return m.name.toLowerCase().includes(q) || m.nim.toLowerCase().includes(q) || (m.email && m.email.toLowerCase().includes(q));
+            });
+
+            // sort
+            if(state.sort === 'name') data.sort((a,b)=>a.name.localeCompare(b.name));
+            else if(state.sort === 'nim') data.sort((a,b)=>a.nim.localeCompare(b.nim));
+
+            totalCount.textContent = data.length;
+            listEl.innerHTML = '';
+            if(data.length === 0){
+                const empty = document.createElement('div');
+                empty.style.padding = '28px';
+                empty.style.gridColumn = '1/-1';
+                empty.style.color = 'var(--muted)';
+                empty.textContent = 'Tidak ada anggota yang cocok.';
+                listEl.appendChild(empty);
+                return;
+            }
+
+            for(const m of data){
+                const card = document.createElement('article');
+                card.className = 'card';
+                const av = document.createElement('div');
+                av.className = 'avatar';
+                av.style.background = colorFromString(m.name);
+                av.textContent = initials(m.name);
+                av.title = m.name;
+
+                const meta = document.createElement('div');
+                meta.className = 'meta';
+                const h3 = document.createElement('h3'); h3.textContent = m.name;
+                const p = document.createElement('p'); p.textContent = `${m.nim} • Angkatan ${m.angkatan}`;
+                const tags = document.createElement('div'); tags.className='tags';
+                for(let i=0;i<Math.min(2,m.skills.length);i++){
+                    const chip = document.createElement('span'); chip.className='chip'; chip.textContent = m.skills[i];
+                    tags.appendChild(chip);
+                }
+                meta.appendChild(h3); meta.appendChild(p); meta.appendChild(tags);
+
+                const actions = document.createElement('div'); actions.className='actions';
+                const view = document.createElement('button'); view.className='icon-btn'; view.title='Lihat profil'; view.textContent='Lihat';
+                view.onclick = ()=>openModal(m);
+                actions.appendChild(view);
+
+                card.appendChild(av); card.appendChild(meta); card.appendChild(actions);
+                listEl.appendChild(card);
+            }
+        }
+
+        function openModal(m){
+            const modal = document.getElementById('modal');
+            modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden','false');
+            document.getElementById('modalName').textContent = m.name;
+            const ma = document.getElementById('modalAvatar'); ma.style.background = colorFromString(m.name); ma.textContent = initials(m.name);
+            document.getElementById('modalNim').textContent = 'NIM: ' + m.nim;
+            document.getElementById('modalAngkatan').textContent = 'Angkatan: ' + m.angkatan;
+            document.getElementById('modalEmail').textContent = 'Email: ' + (m.email || '-');
+            const skills = document.getElementById('modalSkills');
+            skills.innerHTML = '';
+            m.skills.forEach(s=>{
+                const sp = document.createElement('span'); sp.className = 'chip'; sp.textContent = s; skills.appendChild(sp);
+            });
+        }
+
+        function closeModal(){
+            const modal = document.getElementById('modal');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden','true');
+        }
+
+        // export CSV
+        function exportCSV(){
+            const rows = [['Nama','NIM','Angkatan','Email','Skills']];
+            const data = Array.from(listEl.querySelectorAll('.card')).map(card=>{
+                const name = card.querySelector('h3').textContent;
+                const meta = card.querySelector('p').textContent.split('•')[0].trim();
+                const nim = meta;
+                // find original object
+                const obj = members.find(m=>m.name===name && m.nim===nim);
+                return [obj.name, obj.nim, obj.angkatan, obj.email || '', obj.skills.join('; ')];
+            });
+            rows.push(...data);
+            const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+            const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'anggota_kelas.csv'; document.body.appendChild(a); a.click(); a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        // Add member
+        function openAdd(){
+            document.getElementById('addModal').style.display = 'flex';
+            document.getElementById('addModal').setAttribute('aria-hidden','false');
+        }
+        function closeAdd(){
+            document.getElementById('addModal').style.display = 'none';
+            document.getElementById('addModal').setAttribute('aria-hidden','true');
+            document.getElementById('addForm').reset();
+        }
+
+        // events
+        qEl.addEventListener('input', e=>{
+            state.query = e.target.value;
+            render();
+        });
+        filterEl.addEventListener('change', e=>{
+            state.angkatan = e.target.value;
+            render();
+        });
+        sortEl.addEventListener('change', e=>{
+            state.sort = e.target.value;
+            render();
+        });
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        document.getElementById('modal').addEventListener('click', e=>{ if(e.target.id==='modal') closeModal(); });
+
+        document.getElementById('exportBtn').addEventListener('click', exportCSV);
+
+        document.getElementById('addBtn').addEventListener('click', openAdd);
+        document.getElementById('addClose').addEventListener('click', closeAdd);
+        document.getElementById('addCancel').addEventListener('click', closeAdd);
+        document.getElementById('addModal').addEventListener('click', e=>{ if(e.target.id==='addModal') closeAdd(); });
+
+        document.getElementById('addForm').addEventListener('submit', e=>{
+            e.preventDefault();
+            const f = new FormData(e.target);
+            const item = {
+                name: f.get('name').trim(),
+                nim: f.get('nim').trim(),
+                angkatan: f.get('angkatan').trim(),
+                email: f.get('email').trim(),
+                skills: f.get('skills') ? f.get('skills').split(',').map(s=>s.trim()).filter(Boolean) : []
+            };
+            members.push(item);
+            // update filters
+            if(!Array.from(filterEl.options).some(o=>o.value===item.angkatan)){
+                const opt = document.createElement('option'); opt.value=item.angkatan; opt.textContent=`Angkatan ${item.angkatan}`; filterEl.appendChild(opt);
+            }
+            closeAdd();
+            render();
+        });
+
+        // init
+        populateFilters();
+        render();
+    </script>
+</body>
+</html></div>
